@@ -14,11 +14,11 @@ const getProfile = async (req, res, next) => {
     // TODO: Call ProfileService.getProfile(userId)
     // Store the result in 'user' variable
     // Then send success response with status 200
-    throw new Error('NOT_IMPLEMENTED');
+    const data = await ProfileService.getProfile(userId)
 
     res.status(200).json({
       success: true,
-      data: { user },
+      data: { user:data.user },
     });
   } catch (error) {
     next(error);
@@ -39,12 +39,12 @@ const updateProfile = async (req, res, next) => {
     // TODO: Call ProfileService.updatePassword(userId, password)
     // Store the result in 'user' variable
     // Then send success response with status 200
-    throw new Error('NOT_IMPLEMENTED');
+    const data = await ProfileService.updatePassword(userId , password)
 
     res.status(200).json({
       success: true,
       message: 'Password updated successfully',
-      data: { user },
+      data: { user:data.user },
     });
   } catch (error) {
     next(error);

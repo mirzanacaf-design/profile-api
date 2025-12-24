@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const UserModel = require('../models/userModel');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const UserModel = require("../models/userModel");
 
 /**
  * Authentication Service
@@ -20,22 +20,44 @@ class AuthService {
     // If user exists, throw an error with statusCode 409
     // Error message: 'User with this email already exists'
 
+    const existingUser = await UserModel.existsByEmail(email);
+    if (existingUser) {
+      const err = new Error("User with this email already exist");
+      err.statusCode = 409;
+      throw err;
+    }
+
     // TODO: Step 2 - Hash the password
     // Use bcrypt.hash(password, saltRounds) where saltRounds = 10
     // Store result in hashedPassword variable
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // TODO: Step 3 - Create the user in database
     // Call UserModel.create(email, hashedPassword)
     // Store result in newUser variable
 
+    const newUser = await UserModel.create(email, hashedPassword);
+
     // TODO: Step 4 - Generate JWT token
     // Call this.generateToken(newUser.id, newUser.email)
     // Store result in token variable
 
+    const token = this.generateToken(newUser.id, newUser.email);
+
     // TODO: Step 5 - Return user data and token
     // Return object with: { user: { id, email, created_at }, token }
 
-    throw new Error('NOT_IMPLEMENTED');
+    return {
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        created_at: newUser.created_at,
+      },
+      token,
+    };
+
   }
 
   /**
@@ -51,19 +73,38 @@ class AuthService {
     // If user not found, throw error with statusCode 401
     // Error message: 'Invalid email or password'
 
+    const user = await UserModel.findByEmail(email);
+    if (!user) {
+      const err = new Error("Invalid email or password");
+      err.statusCode = 401;
+      throw err;
+    }
+
     // TODO: Step 2 - Verify password
     // Use bcrypt.compare(password, user.password)
     // If password invalid, throw error with statusCode 401
     // Error message: 'Invalid email or password'
 
+    const comparePassword = await bcrypt.compare(password, user.password);
+    if (!comparePassword) {
+      const err = new Error("Invalid email or password");
+      err.statusCode = 401;
+      throw err;
+    }
+
     // TODO: Step 3 - Generate JWT token
     // Call this.generateToken(user.id, user.email)
     // Store result in token variable
 
+    const token = this.generateToken(user.id, user.email);
+
+    return {
+      user: { id:user.id, email:user.email },
+      token,
+    };
     // TODO: Step 4 - Return user data and token
     // Return object with: { user: { id, email }, token }
 
-    throw new Error('NOT_IMPLEMENTED');
   }
 
   /**
@@ -78,7 +119,9 @@ class AuthService {
     // Use jwt.sign() with payload { id, email }
     // Secret: process.env.JWT_SECRET
     // Options: { expiresIn: process.env.JWT_EXPIRES_IN }
-    throw new Error('NOT_IMPLEMENTED');
+    return jwt.sign({ id, email }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
   }
 }
 

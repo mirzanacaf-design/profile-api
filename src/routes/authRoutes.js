@@ -11,6 +11,8 @@ const { loginLimiter } = require('../middleware/rateLimiter');
  * @access  Public
  */
 router.post('/register', validateRequest(registerSchema), register);
+//router.post('/login', validateRequest(loginSchema), login);
+
 
 /**
  * @route   POST /auth/login

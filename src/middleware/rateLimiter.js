@@ -1,4 +1,4 @@
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 
 /**
  * Rate limiter for login endpoint
@@ -9,6 +9,16 @@ const rateLimit = require('express-rate-limit');
 // Set max to 5 attempts per window
 // Add custom message: 'Too many login attempts. Please try again after 15 minutes.'
 // Set standardHeaders: true and legacyHeaders: false
-const loginLimiter = null;
+
+const loginLimiter =rateLimit( {
+        windowMs :15 * 60 * 1000,
+        max: 5,
+        message : {
+            message :"Too many login attempts. Please try again after 15 minutes."
+        },
+        standardHeaders : true,
+        legacyHeaders: false
+    })
+
 
 module.exports = { loginLimiter };
