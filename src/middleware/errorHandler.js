@@ -5,24 +5,27 @@
 const errorHandler = (err, req, res, next) => {
   console.error(' Error:', err);
 
-  // TODO: Determine the appropriate HTTP status code
-  // Check if err.statusCode exists, use it, otherwise default to 500
-  // Store in statusCode variable
+  let statusCode = err.statusCode || 500;
+  let message = err.message || 'Internal Server Error';
 
-  // TODO: Get error message
-  // Use err.message if exists, otherwise 'Internal Server Error'
-  // Store in message variable
+  // Handle specific error types
+  if (err.name === 'ValidationError') {
+    statusCode = 400;
+    message = 'Validation Error';
+  }
 
-  // TODO: Handle specific error types
-  // If err.name === 'ValidationError', set statusCode to 400
-  // If err.code === '23505' (PostgreSQL unique constraint), set statusCode to 409
+  if (err.code === '23505') {
+    // PostgreSQL unique constraint violation
+    statusCode = 409;
+    message = 'Resource already exists';
+  }
 
-  // TODO: Send error response
-  // Use res.status(statusCode).json()
-  // Response should include: { success: false, message: message }
-  // In development mode, also include stack trace
-
-  throw new Error('NOT_IMPLEMENTED');
+  // Send error response
+  res.status(statusCode).json({
+    success: false,
+    message: message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+  });
 };
 
 /**

@@ -13,18 +13,20 @@ class ProfileService {
    * @throws {Error} If user not found
    */
   static async getProfile(userId) {
-    // TODO: Step 1 - Find user by ID
-    // Call UserModel.findById(userId)
-    // Store result in user variable
+    const user = await UserModel.findById(userId);
+    
+    if (!user) {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    }
 
-    // TODO: Step 2 - Check if user exists
-    // If user not found, throw error with statusCode 404
-    // Error message: 'User not found'
-
-    // TODO: Step 3 - Return user profile data
-    // Return object with: { id, email, created_at, updated_at }
-
-    throw new Error('NOT_IMPLEMENTED');
+    return {
+      id: user.id,
+      email: user.email,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    };
   }
 
   /**
@@ -35,22 +37,24 @@ class ProfileService {
    * @throws {Error} If user not found
    */
   static async updatePassword(userId, newPassword) {
-    // TODO: Step 1 - Hash the new password
-    // Use bcrypt.hash(newPassword, saltRounds) where saltRounds = 10
-    // Store result in hashedPassword variable
+    // Hash new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    // TODO: Step 2 - Update password in database
-    // Call UserModel.updatePassword(userId, hashedPassword)
-    // Store result in updatedUser variable
+    // Update password
+    const updatedUser = await UserModel.updatePassword(userId, hashedPassword);
 
-    // TODO: Step 3 - Check if user exists
-    // If updatedUser is null/undefined, throw error with statusCode 404
-    // Error message: 'User not found'
+    if (!updatedUser) {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    }
 
-    // TODO: Step 4 - Return updated user data
-    // Return object with: { id, email, updated_at }
-
-    throw new Error('NOT_IMPLEMENTED');
+    return {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      updated_at: updatedUser.updated_at,
+    };
   }
 }
 

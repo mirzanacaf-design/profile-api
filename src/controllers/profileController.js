@@ -11,10 +11,8 @@ const getProfile = async (req, res, next) => {
     // User info is available from authMiddleware
     const userId = req.user.id;
 
-    // TODO: Call ProfileService.getProfile(userId)
-    // Store the result in 'user' variable
-    // Then send success response with status 200
-    throw new Error('NOT_IMPLEMENTED');
+    // Call service layer to handle business logic
+    const user = await ProfileService.getProfile(userId);
 
     res.status(200).json({
       success: true,
@@ -36,10 +34,8 @@ const updateProfile = async (req, res, next) => {
     const userId = req.user.id;
     const { password } = req.body;
 
-    // TODO: Call ProfileService.updatePassword(userId, password)
-    // Store the result in 'user' variable
-    // Then send success response with status 200
-    throw new Error('NOT_IMPLEMENTED');
+    // Call service layer to handle business logic
+    const user = await ProfileService.updatePassword(userId, password);
 
     res.status(200).json({
       success: true,
