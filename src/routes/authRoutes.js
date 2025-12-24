@@ -18,6 +18,6 @@ router.post('/register', validateRequest(registerSchema), register);
  * @access  Public
  * @note    Rate limited to 5 attempts per 15 minutes
  */
-router.post('/login', loginLimiter, validateRequest(loginSchema), login);
+router.post('/login',loginLimiter ,  validateRequest(loginSchema), login);
 
 module.exports = router;

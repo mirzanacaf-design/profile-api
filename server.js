@@ -9,7 +9,8 @@ const startServer = async () => {
   try {
     // Initialize database tables
     await initDatabase();
-
+    console.log("bhsbwusiq");
+    
     // Create Express app
     const app = createApp();
 

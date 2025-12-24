@@ -24,7 +24,21 @@ class ProfileService {
     // TODO: Step 3 - Return user profile data
     // Return object with: { id, email, created_at, updated_at }
 
-    throw new Error('NOT_IMPLEMENTED');
+      const user = await UserModel.findById(userId);
+
+    if (!user) {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
+    };
+
   }
 
   /**
@@ -50,7 +64,25 @@ class ProfileService {
     // TODO: Step 4 - Return updated user data
     // Return object with: { id, email, updated_at }
 
-    throw new Error('NOT_IMPLEMENTED');
+     const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const updatedUser = await UserModel.updatePassword(
+      userId,
+      hashedPassword
+    );
+
+    if (!updatedUser) {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      updated_at: updatedUser.updated_at,
+    };
+
   }
 }
 

@@ -8,12 +8,13 @@ const AuthService = require('../services/authService');
 const register = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
+    console.log(email);
+    
     // TODO: Call AuthService.register(email, password)
     // Store the result in 'data' variable
     // Then send success response with status 201
-    throw new Error('NOT_IMPLEMENTED');
 
+    const data = await AuthService.register(email , password)
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
@@ -36,7 +37,7 @@ const login = async (req, res, next) => {
     // TODO: Call AuthService.login(email, password)
     // Store the result in 'data' variable
     // Then send success response with status 200
-    throw new Error('NOT_IMPLEMENTED');
+    const data = await AuthService.login(email, password)
 
     res.status(200).json({
       success: true,

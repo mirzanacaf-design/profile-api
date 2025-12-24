@@ -29,6 +29,8 @@ const createApp = () => {
   });
 
   // API Routes
+  console.log("wbsw");
+  
   app.use('/auth', authRoutes);
   app.use('/profile', profileRoutes);
 

@@ -1,6 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
+const dotenv = require('dotenv');
+// const { options } = require('../routes/authRoutes');
+
+dotenv.config()
 
 /**
  * Authentication Service
@@ -35,7 +39,34 @@ class AuthService {
     // TODO: Step 5 - Return user data and token
     // Return object with: { user: { id, email, created_at }, token }
 
-    throw new Error('NOT_IMPLEMENTED');
+
+    // STEP 1
+
+    const existingUser = await UserModel.findByEmail(email)
+    if(existingUser) {
+      const err = new Error("User with this email already exists")
+      err.statusCode = 409 ;
+      throw err
+    }
+
+    // STEP 2
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    // STEP 3
+    const newUser = await UserModel.create(email, hashedPassword)
+
+    // STEP 4
+    const token = this.generateToken(newUser.id , newUser.email)
+
+    // STEP 5
+    return {
+      user : {
+        id :newUser.id ,
+        email : newUser .email ,
+        created_at : newUser.created_at
+      } ,
+      token
+    }
   }
 
   /**
@@ -63,8 +94,37 @@ class AuthService {
     // TODO: Step 4 - Return user data and token
     // Return object with: { user: { id, email }, token }
 
-    throw new Error('NOT_IMPLEMENTED');
+    // STEP 1
+
+    const user = await  UserModel.findByEmail(email)
+    if(!user){
+      const err =  new Error ("Invalid email or password")
+      err.statusCode = 401 
+      throw err
+    }
+
+    // STEP 2
+    const isPasswordValid = await bcrypt.compare(password , user.password)
+    if(!isPasswordValid){
+      const err =  new Error("Invalid email or password")
+      err.statusCode = 401 
+      throw err
+    }
+
+    // STEP 3 
+    const token = this.generateToken(user.id , user.email)
+
+    // STEP 4 
+    return {
+      user : {
+        id : user.id ,
+        email : user.email
+      } ,
+      token
+    }
   }
+
+  // STEP 2 
 
   /**
    * Generate JWT token
@@ -78,7 +138,12 @@ class AuthService {
     // Use jwt.sign() with payload { id, email }
     // Secret: process.env.JWT_SECRET
     // Options: { expiresIn: process.env.JWT_EXPIRES_IN }
-    throw new Error('NOT_IMPLEMENTED');
+
+    return jwt.sign(
+      {id , email} ,
+      process.env.JWT_SECRET ,
+      {expiresIn : process.env.JWT_EXPIRES_IN}
+    )
   }
 }
 
