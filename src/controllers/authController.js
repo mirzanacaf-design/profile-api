@@ -12,13 +12,17 @@ const register = async (req, res, next) => {
     // TODO: Call AuthService.register(email, password)
     // Store the result in 'data' variable
     // Then send success response with status 201
-    throw new Error('NOT_IMPLEMENTED');
 
+    const data = await AuthService.register(email, password)
+    
+    
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
       data,
     });
+    
+    throw new Error('NOT_IMPLEMENTED');
   } catch (error) {
     next(error);
   }
@@ -36,13 +40,15 @@ const login = async (req, res, next) => {
     // TODO: Call AuthService.login(email, password)
     // Store the result in 'data' variable
     // Then send success response with status 200
-    throw new Error('NOT_IMPLEMENTED');
 
+    
     res.status(200).json({
       success: true,
       message: 'Login successful',
       data,
     });
+
+    throw new Error('NOT_IMPLEMENTED');
   } catch (error) {
     next(error);
   }

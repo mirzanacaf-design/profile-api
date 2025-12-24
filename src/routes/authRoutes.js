@@ -3,7 +3,7 @@ const router = express.Router();
 const { register, login } = require('../controllers/authController');
 const { registerSchema, loginSchema } = require('../validators/authValidators');
 const validateRequest = require('../middleware/validateRequest');
-const { loginLimiter } = require('../middleware/rateLimiter');
+// const { loginLimiter } = require('../middleware/rateLimiter');
 
 /**
  * @route   POST /auth/register
@@ -18,6 +18,6 @@ router.post('/register', validateRequest(registerSchema), register);
  * @access  Public
  * @note    Rate limited to 5 attempts per 15 minutes
  */
-router.post('/login', loginLimiter, validateRequest(loginSchema), login);
+router.post('/login', validateRequest(loginSchema), login);
 
 module.exports = router;
