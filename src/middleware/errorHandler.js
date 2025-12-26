@@ -7,7 +7,6 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 const errorHandler = (err, req, res, next) => {
-  console.error(' Error:', err);
 
   // TODO: Determine the appropriate HTTP status code
   // Check if err.statusCode exists, use it, otherwise default to 500
@@ -26,24 +25,26 @@ const errorHandler = (err, req, res, next) => {
   // Response should include: { success: false, message: message }
   // In development mode, also include stack trace
 
-    let statusCode = err.statusCode || 500
+     if (process.env.NODE_ENV !== 'test') {
+    console.error('Error:', err)
+  }
 
-    let message = err.message || "Internal Server Error"
+  let statusCode = err.statusCode || 500
+  let message = err.message || "Internal Server Error"
 
-    if(err.name === "ValidationError") {
-      statusCode = 400
-    }
+  if (err.name === "ValidationError") {
+    statusCode = 400
+  }
 
-    if(err.code === '23505') {
-      statusCode = 409
-    }
+  if (err.code === '23505') {
+    statusCode = 409
+  }
 
-    res.status(statusCode).json({
-      success :false ,
-      message  ,
-      ...process.env.NODE_ENV === 'development' && ({stack : err.stack})
-
-    })
+  res.status(statusCode).json({
+    success: false,
+    message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  })
 
 };
 
