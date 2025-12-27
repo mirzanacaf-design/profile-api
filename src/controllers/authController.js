@@ -9,9 +9,10 @@ const register = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-     // Call service layer to handle business logic
-    const data = await AuthService.register(email, password);
-
+    // TODO: Call AuthService.register(email, password)
+    // Store the result in 'data' variable
+    // Then send success response with status 201
+    const data = await AuthService.register(email, password)
     res.status(201).json({
       success: true,
       message: 'User registered successfully',
@@ -31,8 +32,10 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // Call service layer to handle business logic
-    const data = await AuthService.login(email, password);
+    // TODO: Call AuthService.login(email, password)
+    // Store the result in 'data' variable
+    // Then send success response with status 200
+    const data = await AuthService.login(email, password)
 
     res.status(200).json({
       success: true,

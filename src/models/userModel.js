@@ -11,11 +11,8 @@ class UserModel {
    * @returns {Promise<Object|null>} User object or null if not found
    */
   static async findByEmail(email) {
-    const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
-    );
-    return result.rows[0] || null;
+    const result = await pool.query(`select * from users where email = $1`, [email])
+    return result.rows[0]
   }
 
   /**
@@ -24,11 +21,8 @@ class UserModel {
    * @returns {Promise<Object|null>} User object or null if not found
    */
   static async findById(id) {
-    const result = await pool.query(
-      'SELECT id, email, created_at, updated_at FROM users WHERE id = $1',
-      [id]
-    );
-    return result.rows[0] || null;
+    const result = await pool.query(`select * from users where id = $1`, [id])
+    return result.rows[0]
   }
 
   /**
@@ -38,11 +32,8 @@ class UserModel {
    * @returns {Promise<Object>} Created user object (without password)
    */
   static async create(email, hashedPassword) {
-    const result = await pool.query(
-      'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email, created_at',
-      [email, hashedPassword]
-    );
-    return result.rows[0];
+    const result = await pool.query(`insert into users (email, password) values ($1, $2) returning *`, [email, hashedPassword])
+    return result.rows[0]
   }
 
   /**
@@ -52,11 +43,8 @@ class UserModel {
    * @returns {Promise<Object>} Updated user object (without password)
    */
   static async updatePassword(id, hashedPassword) {
-    const result = await pool.query(
-      'UPDATE users SET password = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, email, updated_at',
-      [hashedPassword, id]
-    );
-    return result.rows[0];
+    const result = await pool.query(`update users set password = $2 where id = $1 returning *`, [id, hashedPassword])
+    return result.rows[0]
   }
 
   /**
@@ -65,15 +53,10 @@ class UserModel {
    * @returns {Promise<boolean>} True if user exists, false otherwise
    */
   static async existsByEmail(email) {
-    const result = await pool.query(
-      'SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)',
-      [email]
-    );
-    return result.rows[0].exists;
+    // Return the boolean result from result.rows[0].exists
+    const result = await pool.query(`select exists (select * from users where email = $1)`, [email])
+    return result.rows[0].exists
   }
 }
-
-module.exports = UserModel;
-
 
 module.exports = UserModel;

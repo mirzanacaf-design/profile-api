@@ -13,20 +13,20 @@ class ProfileService {
    * @throws {Error} If user not found
    */
   static async getProfile(userId) {
-    const user = await UserModel.findById(userId);
-    
+    const user = await UserModel.findById(userId)
     if (!user) {
-      const error = new Error('User not found');
-      error.statusCode = 404;
-      throw error;
+      const error = new Error('User not found')
+      error.statusCode = 404
+      throw error
     }
-
     return {
-      id: user.id,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    };
+      user: {
+        id: user.id,
+        email: user.email,
+        created_at: user.created_at,
+        updated_at: user.updated_at
+      }
+    }
   }
 
   /**
@@ -37,24 +37,20 @@ class ProfileService {
    * @throws {Error} If user not found
    */
   static async updatePassword(userId, newPassword) {
-    // Hash new password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-    // Update password
-    const updatedUser = await UserModel.updatePassword(userId, hashedPassword);
-
-    if (!updatedUser) {
-      const error = new Error('User not found');
-      error.statusCode = 404;
-      throw error;
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    const updatedUser = await UserModel.updatePassword(userId, hashedPassword)
+    if (updatedUser === undefined || updatedUser === null) {
+      const error = new Error('User not found')
+      error.statusCode = 404
+      throw error
     }
-
     return {
-      id: updatedUser.id,
-      email: updatedUser.email,
-      updated_at: updatedUser.updated_at,
-    };
+      updatedUser: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        updated_at: updatedUser.updated_at
+      }
+    }
   }
 }
 

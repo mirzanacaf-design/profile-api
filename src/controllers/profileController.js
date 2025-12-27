@@ -10,10 +10,7 @@ const getProfile = async (req, res, next) => {
   try {
     // User info is available from authMiddleware
     const userId = req.user.id;
-
-    // Call service layer to handle business logic
-    const user = await ProfileService.getProfile(userId);
-
+    const user = await ProfileService.getProfile(userId)
     res.status(200).json({
       success: true,
       data: { user },
@@ -33,10 +30,7 @@ const updateProfile = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { password } = req.body;
-
-    // Call service layer to handle business logic
-    const user = await ProfileService.updatePassword(userId, password);
-
+    const user = await ProfileService.updatePassword(userId, password)
     res.status(200).json({
       success: true,
       message: 'Password updated successfully',
