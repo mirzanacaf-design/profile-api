@@ -47,7 +47,7 @@ class AuthService {
       user: {
         id: newUser.id,
         email: newUser.email,
-        created_at: Date.now()
+        created_at: newUser.created_at
       },
       token
     }
@@ -62,7 +62,7 @@ class AuthService {
    */
   static async login(email, password) {
     const user = await UserModel.findByEmail(email)
-    console.log(Object.keys(user));
+    // console.log(Object.keys(user));
     if (!user) {
       const error = new Error('Invalid email or password')
       error.statusCode = 401

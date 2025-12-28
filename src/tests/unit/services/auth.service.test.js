@@ -31,7 +31,7 @@ describe('AuthService Unit Tests', () => {
                 email: mockEmail,
                 created_at: new Date()
             })
-            jwt.sign.mockResolvedValue('mock-jwt-token')
+            jwt.sign.mockReturnValue('mock-jwt-token')
             const result = await AuthService.register(mockEmail, mockPassword)
 
             expect(UserModel.findByEmail).toHaveBeenCalledWith(mockEmail)
@@ -43,7 +43,7 @@ describe('AuthService Unit Tests', () => {
                 { expiresIn: process.env.JWT_EXPIRES_IN }
             )
             expect(result).toHaveProperty('user')
-            expect(result).toHaveProperty('token', 'mokc-jwt-token')
+            expect(result).toHaveProperty('token', 'mock-jwt-token')
             expect(result.user).toHaveProperty('email', mockEmail)
         })
 
@@ -55,7 +55,7 @@ describe('AuthService Unit Tests', () => {
 
             await expect(AuthService.register(mockEmail, mockPassword))
                 .rejects
-                .toThrow('user with this email exists')
+                .toThrow('User with this email already exists')
             expect(UserModel.create).not.toHaveBeenCalled()
         })
 
@@ -80,8 +80,8 @@ describe('AuthService Unit Tests', () => {
                 email: mockEmail,
                 password: mockHashedPassword
             })
-            bcrypt.compare.mockResolvedValue('true')
-            jwt.sign.mockResolvedValue('mock-jwt-token')
+            bcrypt.compare.mockResolvedValue(true)
+            jwt.sign.mockReturnValue('mock-jwt-token')
             const result = await AuthService.login(mockEmail, mockPassword)
             expect(UserModel.findByEmail).toHaveBeenCalledWith(mockEmail)
             expect(bcrypt.compare).toHaveBeenCalledWith(mockPassword, mockHashedPassword)

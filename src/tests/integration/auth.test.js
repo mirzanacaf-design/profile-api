@@ -28,7 +28,7 @@ describe('Auth API Endpoint', () => {
     // post auth/register endpoint test-i
     describe('POST /auth/register', () => {
         const validUser = {
-            email: 'test@examle.com',
+            email: 'test@example.com',
             password: 'test123!@#',
             firstName: 'Test',
             lastName: 'User'
@@ -41,21 +41,21 @@ describe('Auth API Endpoint', () => {
                 .send(validUser)
                 .expect(201)
 
-            expect(response.body).toHaveProperty('succes', true)
             expect(response.body).toHaveProperty('data')
             expect(response.body.data).toHaveProperty('token')
-            expect(response.body.data).toHaveProperty('email', validUser.email)
-            expect(response.body.data).not.toHaveProperty('password')
+            expect(response.body).toHaveProperty('success', true)
+            expect(response.body.data.user).toHaveProperty('email', validUser.email)
+            expect(response.body.data.user).not.toHaveProperty('password')
         })
 
         // Test2: Email olmadan qeydiyyat xeta verilmelidir
         it('should fail with missing email', async () => {
             const response = await request(app)
                 .post('/auth/register')
-                .send(...validUser, email.undefined)
+                .send({ ...validUser, email: undefined })
                 .expect(400)
 
-            expect(response.body).toHaveProperty('succes', false)
+            expect(response.body).toHaveProperty('success', false)
             expect(response.body).toHaveProperty('errors')
         })
 

@@ -3,7 +3,7 @@
  * Catches all errors and sends appropriate responses
  */
 const errorHandler = (err, req, res, next) => {
-  console.error(' Error:', err);
+  // console.error(' Error:', err);
   let statusCode = err.statusCode || 500
   let message = err.message || 'internal server error'
   let response = { success: false, message }
